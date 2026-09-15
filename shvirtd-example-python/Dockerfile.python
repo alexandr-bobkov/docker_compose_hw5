@@ -1,0 +1,24 @@
+# === ЭТАП 1: Сборка (builder) ===
+# Берем официальный легкий образ Python
+FROM python:3.12-slim AS builder
+# Указываем рабочую папку внутри контейнера
+WORKDIR /app
+# Копируем файл со списком библиотек из папки проекта
+COPY requirements.txt .
+# Скачиваем нужные библиотеки в специальную папку /app/wheels
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
+
+
+# === ЭТАП 2: Финальный чистый образ ===
+# Снова берем чистый образ Python
+FROM python:3.12-slim
+WORKDIR /app
+# Копируем УЖЕ СКАЧАННЫЕ библиотеки из первого этапа (builder)
+COPY --from=builder /app/wheels /wheels
+COPY --from=builder /app/requirements.txt .
+# Устанавливаем их без создания лишнего кэша
+RUN pip install --no-cache /wheels/*
+# Копируем весь исходный код приложения из сделанного Fork
+COPY . .
+# Указываем команду для запуска веб-сервера uvicorn и открытия порта 5000
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]

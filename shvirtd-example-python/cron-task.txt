@@ -1,0 +1,1 @@
+* * * * * /opt/docker_compose_hw5/shvirtd-example-python/backup.sh >> /var/log/backup.log 2>&1

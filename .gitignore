@@ -1,0 +1,12 @@
+# Локальные директории Terraform
+**/.terraform/*
+
+# Файлы состояния Terraform
+*.tfstate
+*.tfstate.*
+
+# Файлы с секретными переменными (на будущее)
+*.tfvars
+*.tfvars.json
+__pycache__/
+*.pyc
